@@ -1,40 +1,71 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Meta tag to ensure the page is responsive on all devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Page title displayed on the browser tab -->
     <title>Quote Of The Day</title>
+    <!-- Linking the external CSS file for styling -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+ <!-- Container for the quote display -->
  <div class="quote-box">
+    <!-- Header for the app -->
     <h2>Quote Of The Day</h2>
-    <blockquote id = "quote">Loading...</blockquote>
-    <span id = "author">Loading...</span>
+    <!-- Placeholder for the quote, updated dynamically -->
+    <blockquote id="quote">Loading...</blockquote>
+    <!-- Placeholder for the author of the quote, updated dynamically -->
+    <span id="author">Loading...</span>
+    <!-- Buttons for generating a new quote and tweeting -->
     <div>
+        <!-- Button to fetch a new quote -->
         <button onclick="getQuote(api_url);">New Quote</button>
-        <button onclick="tweet()"><img src = "twitter.png"> Tweet</button>
+        <!-- Button to tweet the current quote -->
+        <button onclick="tweet()">
+            <img src="twitter.png"> Tweet
+        </button>
     </div>
  </div>
+
+<!-- JavaScript for app functionality -->
 <script>
-const quote = document.getElementById("quote");
-const author = document.getElementById("author");
-const api_url = "https://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json";   
+    // References to the DOM elements for the quote and author
+    const quote = document.getElementById("quote");
+    const author = document.getElementById("author");
+    // API endpoint for fetching random quotes
+    const api_url = "https://api.forismatic.com/api/1.0/?method=getQuote&lang=en&format=json";   
 
-async function getQuote(url) {
-    const response = await fetch(url);
-    var data = await response.json();
-    console.log(data);
-    quote.innerHTML = data.content;
-    author.innerHTML = data.author;
-}
+    // Function to fetch and display a new quote
+    async function getQuote(url) {
+        try {
+            // Fetching data from the API
+            const response = await fetch(url);
+            var data = await response.json();
+            console.log(data); // Logging the data for debugging
+            // Updating the DOM with the new quote and author
+            quote.innerHTML = data.content;
+            author.innerHTML = data.author || "Unknown";
+        } catch (error) {
+            // Handle errors gracefully
+            console.error("Error fetching quote:", error);
+            quote.innerHTML = "Unable to fetch quote. Please try again.";
+            author.innerHTML = "";
+        }
+    }
 
-getQuote(api_url);
+    // Initial quote fetch when the page loads
+    getQuote(api_url);
 
-function tweet() {
-    window.open("https://twitter.com/intent/tweet?text=" + quote.innerHTML+ "---- by" + author.innerHTML, "Tweet Window", "width=600,height=300");
-}
-
+    // Function to open a new window for tweeting the current quote
+    function tweet() {
+        window.open(
+            "https://twitter.com/intent/tweet?text=" + quote.innerHTML + " ---- by " + author.innerHTML, 
+            "Tweet Window", 
+            "width=600,height=300"
+        );
+    }
 </script>
 
 </body>
